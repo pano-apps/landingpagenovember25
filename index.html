@@ -359,16 +359,19 @@
                 <h2>You are the only solution</h2>
                 <p>Join our waitlist to be notified when we launch. Together we can protect the present and build the future.</p>
                 
-                <form class="email-form" id="emailForm">
-                    <input 
-                        type="email" 
-                        class="email-input" 
-                        placeholder="Enter your email address" 
-                        required
-                        id="emailInput"
-                    >
-                    <button type="submit" class="submit-btn">Get Early Access</button>
-                </form>
+            <form class="email-form" 
+                action="https://formspree.io/f/xjkjwwyn" 
+                method="POST"
+            >
+                <input 
+                    type="email" 
+                    class="email-input" 
+                    name="email"
+                    placeholder="Enter your email address" 
+                    required
+                >
+                <button type="submit" class="submit-btn">Get Early Access</button>
+            </form>
                 
                 <div class="success-message" id="successMessage">
                     ✓ Thank you! We'll be in touch soon.
@@ -382,28 +385,8 @@
     </div>
 
     <script>
-        document.getElementById('emailForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('emailInput').value;
-            const successMessage = document.getElementById('successMessage');
-            
-           // Send email to you via mailto
-            const subject = encodeURIComponent('New Panodime Waitlist Signup');
-            const body = encodeURIComponent(`New email submitted: ${email}`);
-            window.location.href = `mailto:support@panodime.com?subject=${subject}&body=${body}`;
-            
-            // Show success message
-            successMessage.classList.add('show');
-            
-            // Clear the input
-            document.getElementById('emailInput').value = '';
-            
-            // Hide success message after 5 seconds
-            setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 5000);
-        });
+           //formspree handles the submission above
+            //NO javascript needed!
     </script>
 </body>
 </html>
