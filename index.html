@@ -388,8 +388,10 @@
             const email = document.getElementById('emailInput').value;
             const successMessage = document.getElementById('successMessage');
             
-            // In a real implementation, you would send this to your backend
-            console.log('Email submitted:', email);
+           // Send email to you via mailto
+            const subject = encodeURIComponent('New Panodime Waitlist Signup');
+            const body = encodeURIComponent(`New email submitted: ${email}`);
+            window.location.href = `mailto:support@panodime.com?subject=${subject}&body=${body}`;
             
             // Show success message
             successMessage.classList.add('show');
