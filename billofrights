@@ -1,0 +1,612 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill of Rights — Panodime</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0f;
+            --color-surface: #12121a;
+            --color-surface-elevated: #1a1a25;
+            --color-primary: #6366f1;
+            --color-primary-glow: rgba(99, 102, 241, 0.3);
+            --color-accent: #22d3ee;
+            --color-accent-warm: #f472b6;
+            --color-text: #f4f4f5;
+            --color-text-muted: #a1a1aa;
+            --color-border: rgba(255, 255, 255, 0.08);
+            --font-display: 'Instrument Serif', Georgia, serif;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(244, 114, 182, 0.1), transparent);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-2%, 2%) rotate(1deg); }
+            66% { transform: translate(2%, -1%) rotate(-1deg); }
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 15, 0.7);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a.active {
+            color: var(--color-text);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: width 0.3s var(--ease-out-expo);
+        }
+
+        .nav-links a.active::after,
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        .nav-cta {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--color-primary-glow);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--color-text);
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 10rem 2rem 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--color-surface), transparent);
+            z-index: -1;
+        }
+
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.1s both;
+        }
+
+        .page-header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.2s both;
+        }
+
+        .page-header h1 em {
+            font-style: italic;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
+            max-width: 650px;
+            margin: 0 auto;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.3s both;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Rights Section */
+        .rights-section {
+            padding: 4rem 2rem 8rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .preamble {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preamble::before {
+            content: '"';
+            font-family: var(--font-display);
+            font-size: 12rem;
+            position: absolute;
+            top: -2rem;
+            left: 1rem;
+            color: var(--color-primary);
+            opacity: 0.1;
+            line-height: 1;
+        }
+
+        .preamble p {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .rights-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .right-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            align-items: start;
+            transition: all 0.4s var(--ease-out-expo);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .right-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .right-card:hover {
+            border-color: var(--color-primary);
+            transform: translateX(8px);
+            box-shadow: -20px 0 60px rgba(99, 102, 241, 0.1);
+        }
+
+        .right-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 400;
+            flex-shrink: 0;
+        }
+
+        .right-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+        }
+
+        .right-content p {
+            color: var(--color-text-muted);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* CTA */
+        .page-cta {
+            text-align: center;
+            padding: 4rem 2rem 8rem;
+        }
+
+        .cta-box {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 24px;
+            padding: 4rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-box h2 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .cta-box p {
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px var(--color-primary-glow);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--color-border);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--color-primary);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links, .nav-cta {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .page-header {
+                padding: 8rem 1.5rem 3rem;
+            }
+
+            .rights-section {
+                padding: 2rem 1.5rem 6rem;
+            }
+
+            .preamble {
+                padding: 2rem;
+            }
+
+            .right-card {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .right-number {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .cta-box {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="noise"></div>
+
+    <nav>
+        <a href="index.html" class="logo">Panodime</a>
+        <ul class="nav-links">
+            <li><a href="index.html#mission">Mission</a></li>
+            <li><a href="index.html#pillars">Our Approach</a></li>
+            <li><a href="bill-of-rights.html" class="active">Bill of Rights</a></li>
+            <li><a href="job-plan.html">Job Plan</a></li>
+        </ul>
+        <a href="index.html#join" class="nav-cta">Join the Movement</a>
+        <button class="mobile-menu-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <header class="page-header">
+        <div class="page-badge">Our Foundation</div>
+        <h1>The AI <em>Bill of Rights</em></h1>
+        <p class="page-subtitle">Ten fundamental rights that every person deserves in the age of artificial intelligence.</p>
+    </header>
+
+    <section class="rights-section">
+        <div class="container">
+            <div class="preamble">
+                <p>We hold these truths to be self-evident: that AI is a tool created by and for humanity, and its development and deployment must be guided by principles that protect human dignity, ensure equitable access, and promote the common good. These rights establish the foundation for a future where AI serves all people, not just the privileged few.</p>
+            </div>
+
+            <div class="rights-list">
+                <article class="right-card">
+                    <div class="right-number">I</div>
+                    <div class="right-content">
+                        <h3>Right to Transparency</h3>
+                        <p>Every person has the right to know when they are interacting with an AI system, how it makes decisions, and what data it uses. AI systems must be explainable, and their logic must be accessible to those affected by their decisions.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">II</div>
+                    <div class="right-content">
+                        <h3>Right to Privacy</h3>
+                        <p>Personal data used by AI systems must be collected with informed consent, protected from unauthorized access, and individuals must have the right to access, correct, and delete their data at any time.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">III</div>
+                    <div class="right-content">
+                        <h3>Right to Non-Discrimination</h3>
+                        <p>AI systems must not perpetuate or amplify discrimination based on race, gender, age, disability, religion, sexual orientation, or any other protected characteristic. Regular audits must ensure fairness in outcomes.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">IV</div>
+                    <div class="right-content">
+                        <h3>Right to Human Oversight</h3>
+                        <p>Critical decisions affecting human lives—including employment, healthcare, criminal justice, and financial services—must have meaningful human oversight. No person shall be subject to a fully automated decision that significantly impacts their life.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">V</div>
+                    <div class="right-content">
+                        <h3>Right to Appeal</h3>
+                        <p>Any person affected by an AI-driven decision has the right to challenge that decision, receive a human review, and obtain a clear explanation of how the decision was reached and how it can be corrected.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">VI</div>
+                    <div class="right-content">
+                        <h3>Right to Economic Security</h3>
+                        <p>Workers displaced by AI automation have the right to meaningful transition support, including retraining programs, income protection, and access to emerging job opportunities. The gains from AI productivity must be shared broadly.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">VII</div>
+                    <div class="right-content">
+                        <h3>Right to Access</h3>
+                        <p>The benefits of AI must be accessible to all, regardless of economic status or geographic location. Public AI infrastructure must be developed to ensure equitable access to AI-powered services and opportunities.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">VIII</div>
+                    <div class="right-content">
+                        <h3>Right to Democratic Participation</h3>
+                        <p>Citizens have the right to participate in decisions about how AI is developed and deployed in their communities. AI governance must include diverse voices, especially those most affected by these technologies.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">IX</div>
+                    <div class="right-content">
+                        <h3>Right to Safety</h3>
+                        <p>AI systems must be designed and tested to ensure they do not cause harm to individuals or society. Developers and deployers of AI bear responsibility for the safety of their systems and must be held accountable for failures.</p>
+                    </div>
+                </article>
+
+                <article class="right-card">
+                    <div class="right-number">X</div>
+                    <div class="right-content">
+                        <h3>Right to Human Dignity</h3>
+                        <p>AI must never be used to diminish human dignity, manipulate human behavior against a person's interests, or undermine human autonomy. The ultimate purpose of AI must be to enhance human flourishing, not to replace or subjugate humanity.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-cta">
+        <div class="cta-box">
+            <h2>Stand with us</h2>
+            <p>These rights are not just ideals—they're a blueprint for action. Join our community and help us make these rights a reality.</p>
+            <a href="index.html#join" class="btn-primary">
+                Join the Movement
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Panodime. All rights reserved. <a href="index.html">Return to Home</a></p>
+    </footer>
+
+    <script>
+        // Animate cards on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.right-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
