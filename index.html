@@ -3,390 +3,864 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panodime - AI for Everyone</title>
+    <title>Panodime — AI for All People</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --color-bg: #0a0a0f;
+            --color-surface: #12121a;
+            --color-surface-elevated: #1a1a25;
+            --color-primary: #6366f1;
+            --color-primary-glow: rgba(99, 102, 241, 0.3);
+            --color-accent: #22d3ee;
+            --color-accent-warm: #f472b6;
+            --color-text: #f4f4f5;
+            --color-text-muted: #a1a1aa;
+            --color-border: rgba(255, 255, 255, 0.08);
+            --font-display: 'Instrument Serif', Georgia, serif;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
-            color: #e8eaf0;
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
             line-height: 1.6;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Animated background gradient */
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        body::before {
-            content: '';
+        /* Animated Background */
+        .bg-gradient {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(76, 123, 243, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(99, 102, 241, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(244, 114, 182, 0.1), transparent),
+                radial-gradient(ellipse 50% 30% at 50% 80%, rgba(34, 211, 238, 0.08), transparent);
+            animation: bgFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-2%, 2%) rotate(1deg); }
+            66% { transform: translate(2%, -1%) rotate(-1deg); }
+        }
+
+        /* Noise Texture */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            opacity: 0.03;
             pointer-events: none;
-            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
         }
 
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Header */
-        header {
-            padding: 32px 0;
-            animation: fadeInDown 0.8s ease-out;
-        }
-
-        .logo-container {
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 16px;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 15, 0.7);
+            border-bottom: 1px solid var(--color-border);
+            transition: all 0.3s ease;
         }
 
         .logo {
-            height: 60px;
-            filter: drop-shadow(0 4px 12px rgba(76, 123, 243, 0.3));
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: width 0.3s var(--ease-out-expo);
+        }
+
+        .nav-links a:hover {
+            color: var(--color-text);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--color-primary-glow);
         }
 
         /* Hero Section */
         .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 80px 0 60px;
-            animation: fadeInUp 1s ease-out;
+            padding: 8rem 2rem 4rem;
+            position: relative;
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            background: rgba(76, 123, 243, 0.15);
-            border: 1px solid rgba(76, 123, 243, 0.3);
-            border-radius: 24px;
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #6b9fff;
-            margin-bottom: 32px;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.1s both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--color-accent);
+            border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.02); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
-        h1 {
-            font-size: clamp(36px, 6vw, 64px);
-            font-weight: 700;
-            margin-bottom: 48px;
-            background: linear-gradient(135deg, #ffffff 0%, #a0b4ff 100%);
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.2s both;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            line-height: 1.2;
         }
 
-        /* Content Section */
-        .content {
-            max-width: 800px;
-            margin: 0 auto 80px;
-            padding: 48px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            backdrop-filter: blur(10px);
-            animation: fadeIn 1.2s ease-out;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .content p {
-            font-size: 18px;
-            line-height: 1.8;
-            color: #d1d9e6;
-            margin-bottom: 24px;
-        }
-
-        .content p:last-child {
-            margin-bottom: 0;
-        }
-
-        .highlight {
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        /* Email Signup Section */
-        .signup-section {
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-muted);
             max-width: 600px;
-            margin: 0 auto 100px;
-            padding: 56px 48px;
-            background: linear-gradient(135deg, rgba(76, 123, 243, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
-            border: 1px solid rgba(76, 123, 243, 0.2);
-            border-radius: 24px;
-            text-align: center;
-            animation: fadeInUp 1.4s ease-out;
-            box-shadow: 0 8px 32px rgba(76, 123, 243, 0.15);
+            margin-bottom: 3rem;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.3s both;
         }
 
-        .signup-section h2 {
-            font-size: 32px;
-            margin-bottom: 16px;
-            color: #ffffff;
-        }
-
-        .signup-section p {
-            font-size: 16px;
-            color: #b8c5db;
-            margin-bottom: 32px;
-        }
-
-        .email-form {
+        .hero-actions {
             display: flex;
-            gap: 12px;
+            gap: 1rem;
             flex-wrap: wrap;
             justify-content: center;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.4s both;
         }
 
-        .email-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 16px 24px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            color: #ffffff;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .email-input::placeholder {
-            color: #6b7b95;
-        }
-
-        .email-input:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #4c7bf3;
-            box-shadow: 0 0 0 3px rgba(76, 123, 243, 0.1);
-        }
-
-        .submit-btn {
-            padding: 16px 40px;
-            font-size: 16px;
-            font-weight: 600;
-            background: linear-gradient(135deg, #4c7bf3 0%, #5b6ff3 100%);
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: var(--color-primary);
+            color: white;
             border: none;
-            border-radius: 12px;
-            color: #ffffff;
+            border-radius: 100px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(76, 123, 243, 0.3);
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(76, 123, 243, 0.4);
-            background: linear-gradient(135deg, #5b8aff 0%, #6a7eff 100%);
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px var(--color-primary-glow);
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
+        .btn-secondary {
+            padding: 1rem 2rem;
+            background: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+            border-radius: 100px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-expo);
+            text-decoration: none;
         }
 
-        /* Success Message */
-        .success-message {
-            display: none;
-            padding: 16px 24px;
-            background: rgba(52, 211, 153, 0.1);
-            border: 1px solid rgba(52, 211, 153, 0.3);
-            border-radius: 12px;
-            color: #6ee7b7;
-            margin-top: 16px;
-            animation: fadeIn 0.5s ease-out;
+        .btn-secondary:hover {
+            background: var(--color-surface);
+            border-color: var(--color-text-muted);
         }
 
-        .success-message.show {
-            display: block;
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.6s both;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--color-text-muted), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollPulse {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(0.5); opacity: 0.5; }
+        }
+
+        /* Sections */
+        section {
+            padding: 8rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Problem Section */
+        .problem {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .problem-content p {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s var(--ease-out-expo);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 400;
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Pillars Section */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .pillar-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pillar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s var(--ease-out-expo);
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-8px);
+            border-color: transparent;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .pillar-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .pillar-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pillar-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .pillar-card p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--color-primary-glow), transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 32px;
+            padding: 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-card .section-title {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .cta-card p {
+            color: var(--color-text-muted);
+            font-size: 1.125rem;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
         }
 
         /* Footer */
         footer {
-            text-align: center;
-            padding: 48px 24px;
-            color: #6b7b95;
-            font-size: 14px;
+            border-top: 1px solid var(--color-border);
+            padding: 4rem 2rem;
         }
 
-        /* Animations */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr repeat(3, 1fr);
+            gap: 4rem;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer-brand .logo {
+            margin-bottom: 1rem;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .footer-brand p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+
+        .footer-column h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column a {
+            color: var(--color-text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-column a:hover {
+            color: var(--color-primary);
+        }
+
+        .footer-bottom {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            background: var(--color-surface);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--color-text);
+            transition: all 0.3s ease;
         }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            .problem-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .pillars-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links, .nav-cta {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
             .hero {
-                padding: 60px 0 40px;
+                padding: 7rem 1.5rem 4rem;
             }
 
-            .content {
-                padding: 32px 24px;
+            section {
+                padding: 5rem 1.5rem;
             }
 
-            .signup-section {
-                padding: 40px 24px;
+            .problem-stats {
+                grid-template-columns: 1fr;
             }
 
-            .email-form {
+            .cta-card {
+                padding: 3rem 2rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
                 flex-direction: column;
-            }
-
-            .email-input,
-            .submit-btn {
-                width: 100%;
+                gap: 1.5rem;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo-container">
-                <svg class="logo" viewBox="0 0 1019.3 682.8" xmlns="http://www.w3.org/2000/svg">
-                    <style type="text/css">
-                        .st0{fill:#EF4F6C;}
-                        .st1{fill:#FFE772;}
-                        .st2{fill:#29B4ED;}
-                        .st3{fill:#7BE937;}
-                        .st4{fill-rule:evenodd;clip-rule:evenodd;fill:#7BE937;}
-                    </style>
-                    <g>
-                        <g>
-                            <path class="st0" d="M933.6,221.1c3.2-5.7-5.5-20.5-17.9-35c-12.4-14.6-24-24.1-30.9-22.1S844,208,843.9,213.7
-                                c0,2.9,9.4,9.1,17.8,19.1c8.4,9.9,11.7,20,14.7,20C882.6,253,930.5,226.8,933.6,221.1z"/>
-                            <path class="st0" d="M964.5,295.7c-2.8-18.9-7.6-33.2-14.5-35.1c-6.9-2-58,15.7-61.1,20.6c-1.6,2.4,3.1,12.8,5,25.6
-                                c1.9,12.9-0.7,23.1,1.9,24.8c5.2,3.4,59.7,6.5,65.4,3.4C966.8,331.7,967.3,314.6,964.5,295.7z"/>
-                        </g>
-                        <g>
-                            <path class="st1" d="M872.9,507.9c-15.6,11.2-31.1,18.5-36.6,14.8c-5.4-3.7-27.4-53.8-26.8-59.9c0.3-3,10.6-5.4,21.3-13
-                                c10.7-7.5,17.8-16.4,20.7-16.1c5.8,0.6,44.8,38.2,46.2,45.2C899.1,486,888.6,496.7,872.9,507.9z"/>
-                            <path class="st0" d="M925.8,447c-6.5-0.3-51-31.9-53.7-37.5c-1.3-2.8,6.3-10.1,11.5-22c5.3-11.9,6.7-23.1,9.4-24.4
-                                c5.2-2.5,57.9,9.6,62.7,14.9c4.8,5.3,1.3,19.9-6.3,37.5C941.8,433.1,932.3,447.3,925.8,447z"/>
-                        </g>
-                        <g>
-                            <g>
-                                <path class="st2" d="M819.2,159.1L207.5,571.7c-15.6,10.5-36.8,6.4-47.4-9.2c-10.5-15.6-6.4-36.8,9.2-47.4L781,102.5
-                                    c15.6-10.5,36.8-6.4,47.4,9.2C838.9,127.4,834.8,148.6,819.2,159.1z"/>
-                            </g>
-                            <path class="st3" d="M607.1,363.8c-8.6-6.5-61.9-1.1-63.9,13.3c-2,14.4,20.8,91.1,96.1,133.4c75.4,42.3,145.8,37.2,155,27.1
-                                c9.1-10.2-1.5-59.3-13-63.2c-14.9-5.1-43.4,10-100.4-15.7C624,433.1,615.7,370.3,607.1,363.8z"/>
-                        </g>
-                        <path class="st0" d="M68,393.3c-6.9-2-11.7-16.2-14.5-35.1c-2.8-19-2.3-36,3.4-39.2c5.7-3.2,60.2,4,65.4,7.4
-                            c2.6,1.7,0,11.9,1.9,24.8c1.8,12.9,6.6,23.2,5,25.6C126,381.6,74.9,395.3,68,393.3z"/>
-                        <path class="st0" d="M133.2,493.9c-6.9,2-18.5-7.6-30.9-22.1c-12.4-14.6-21.1-29.3-17.9-35c3.2-5.7,51.1-31.9,57.2-31.8
-                            c3.1,0.1,6.3,10.1,14.7,20c8.4,10,17.9,16.2,17.8,19.1C174,449.9,140.1,491.9,133.2,493.9z"/>
-                        <g>
-                            <path class="st0" d="M145.9,248.3c1.3,2.8-6.3,10.1-11.5,22c-5.3,11.9-6.7,23.1-9.4,24.4c-5.2,2.5-57.9-13.6-62.7-18.9
-                                c-4.8-5.3-1.3-19.9,6.3-37.5c7.6-17.6,17.1-27.8,23.6-27.5S143.3,242.7,145.9,248.3z"/>
-                            <path class="st1" d="M187.1,208c-10.7,7.5-17.8,16.4-20.7,16.1c-5.8-0.6-44.8-38.2-46.2-45.2c-1.4-7,9.2-17.8,24.8-28.9
-                                s31.1-18.5,36.6-14.8c5.4,3.6,27.4,53.8,26.8,59.9C208.1,198.1,197.8,200.5,187.1,208z"/>
-                        </g>
-                        <g>
-                            <g>
-                                <path class="st4" d="M223.7,120.2c9.1-10.2,79.6-15.2,154.9,27.1s98.1,119,96.1,133.4s-55.3,19.8-63.9,13.3
-                                    s-16.9-69.2-73.8-94.9s-85.5-10.6-100.4-15.7C225.2,179.5,214.6,130.4,223.7,120.2z"/>
-                            </g>
-                        </g>
-                    </g>
+    <div class="bg-gradient"></div>
+    <div class="noise"></div>
+
+    <nav>
+        <a href="index.html" class="logo">Panodime</a>
+        <ul class="nav-links">
+            <li><a href="#mission">Mission</a></li>
+            <li><a href="#pillars">Our Approach</a></li>
+            <li><a href="bill-of-rights.html">Bill of Rights</a></li>
+            <li><a href="job-plan.html">Job Plan</a></li>
+        </ul>
+        <a href="#join" class="nav-cta">Join the Movement</a>
+        <button class="mobile-menu-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">Building the future responsibly</div>
+        <h1>AI Should Benefit <em>Everyone</em></h1>
+        <p class="hero-subtitle">We're a community dedicated to ensuring all people—not just a few wealthy tech elites—have power over the present and future of artificial intelligence.</p>
+        <div class="hero-actions">
+            <a href="bill-of-rights.html" class="btn-primary">
+                Read Our Bill of Rights
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
-            </div>
-        </header>
+            </a>
+            <a href="#mission" class="btn-secondary">Learn More</a>
+        </div>
+        <div class="scroll-indicator">Scroll</div>
+    </section>
 
-        <main>
-            <section class="hero">
-                <div class="status-badge">Coming Soon</div>
-                <h1>A community dedicated to ensuring all people, not just a few wealthy tech elites, have power over the present and future of AI</h1>
-            </section>
-
-            <section class="content">
-                <p><span class="highlight">AI is truly a double-edged sword.</span> We're in the middle of battle for the present and future of humanity given AI will create such a rapid pace of innovation and job loss. And this isn't doomerism, a Luddite philosophy, or some cheap AI is bad critique.</p>
-                
-                <p>It's a reflection of the very real fact that <span class="highlight">most of the wealthy elites developing AI</span> - a technology itself that's not inherently good or bad - have a move fast and break things philosophy that isn't about what's good for the average person, but about innovating to enrich and empower themselves.</p>
-                
-                <p><span class="highlight">That needs to change.</span> AI development needs to be executed thoughtfully, in a way that benefits all people, not just a fortunate few that are lucky enough to afford and access most of the benefits it creates.</p>
-            </section>
-
-            <section class="signup-section">
-                <h2>You are the only solution</h2>
-                <p>Join our waitlist to be notified when we launch. Together we can protect the present and build the future.</p>
-                
-            <form class="email-form" 
-                action="https://formspree.io/f/xjkjwwyn" 
-                method="POST"
-            >
-                <input 
-                    type="email" 
-                    class="email-input" 
-                    name="email"
-                    placeholder="Enter your email address" 
-                    required
-                >
-                <button type="submit" class="submit-btn">Get Early Access</button>
-            </form>
-                
-                <div class="success-message" id="successMessage">
-                    ✓ Thank you! We'll be in touch soon.
+    <section id="mission" class="problem">
+        <div class="container">
+            <div class="problem-grid">
+                <div class="problem-content">
+                    <span class="section-label">The Challenge</span>
+                    <h2 class="section-title">AI is a double-edged sword</h2>
+                    <p>We're in the middle of a battle for the present and future of humanity. AI will create such a rapid pace of innovation and job displacement that we can't afford to let its development be guided solely by profit motives.</p>
+                    <p>This isn't doomerism or a Luddite philosophy. It's a recognition that most of the wealthy elites developing AI have a "move fast and break things" philosophy that prioritizes their enrichment over what's good for the average person.</p>
+                    <p><strong>That needs to change.</strong> AI development needs to be executed thoughtfully, in a way that benefits all people—not just a fortunate few.</p>
                 </div>
-            </section>
-        </main>
+                <div class="problem-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">300M</div>
+                        <div class="stat-label">Jobs potentially affected by AI automation</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">97%</div>
+                        <div class="stat-label">Of AI investments controlled by tech giants</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$15T</div>
+                        <div class="stat-label">Projected AI economic impact by 2030</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">&lt;1%</div>
+                        <div class="stat-label">Of population making AI governance decisions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <footer>
-            <p>&copy; 2024 Panodime. Building AI for everyone.</p>
-        </footer>
-    </div>
+    <section id="pillars">
+        <div class="container">
+            <div style="text-align: center; max-width: 700px; margin: 0 auto;">
+                <span class="section-label">Our Approach</span>
+                <h2 class="section-title">Three pillars for equitable AI</h2>
+                <p style="color: var(--color-text-muted); font-size: 1.125rem;">Our framework for ensuring AI serves humanity, not just shareholders.</p>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">⚖️</div>
+                    <h3>Democratic Governance</h3>
+                    <p>AI development decisions should involve diverse stakeholders—workers, communities, ethicists—not just investors and engineers. We advocate for inclusive governance structures.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🛡️</div>
+                    <h3>Worker Protection</h3>
+                    <p>As AI transforms industries, we need robust safety nets, retraining programs, and policies that ensure displaced workers aren't left behind in the transition.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🌍</div>
+                    <h3>Universal Benefit</h3>
+                    <p>The productivity gains from AI should be shared broadly through mechanisms like universal basic income, reduced work weeks, and public AI infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="join" class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <span class="section-label">Take Action</span>
+                <h2 class="section-title">Join the movement for equitable AI</h2>
+                <p>Together, we can shape an AI future that works for everyone. Sign up to stay informed and get involved.</p>
+                <div class="hero-actions">
+                    <a href="bill-of-rights.html" class="btn-primary">Read Our Bill of Rights</a>
+                    <a href="job-plan.html" class="btn-secondary">View Our Job Plan</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">Panodime</div>
+                    <p>A community dedicated to ensuring AI benefits all people. We advocate for thoughtful, equitable AI development.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="bill-of-rights.html">Bill of Rights</a></li>
+                        <li><a href="job-plan.html">Job Plan</a></li>
+                        <li><a href="#">Research</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#">Discord</a></li>
+                        <li><a href="#">Events</a></li>
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#">Volunteer</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2025 Panodime. All rights reserved.</span>
+                <div class="footer-social">
+                    <a href="#" aria-label="Twitter">𝕏</a>
+                    <a href="#" aria-label="LinkedIn">in</a>
+                    <a href="#" aria-label="GitHub">⌘</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
-           //formspree handles the submission above
-            //NO javascript needed!
+        // Smooth reveal on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .pillar-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            observer.observe(el);
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
     </script>
 </body>
 </html>
