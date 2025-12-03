@@ -1917,13 +1917,8 @@ function updateAuthUI(isSignedIn, username = null) {
                 loadComments(i);
             }
             
-            // Initialize click handlers for comment triggers
-            document.querySelectorAll('.comment-trigger').forEach((trigger, index) => {
-                const rightNum = index + 1;
-                trigger.onclick = () => {
-                    toggleCommentSection(rightNum);
-                };
-            });
+            // Initialize click handlers for comment triggers (in case auth hasn't loaded yet)
+            updateAuthUI(false);
         });
     </script>
 
