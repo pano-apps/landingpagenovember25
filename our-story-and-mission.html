@@ -550,9 +550,18 @@
                 padding: 1rem 1.5rem;
             }
 
-            .nav-links {
+           .nav-links {
                 display: none;
-            }
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 15, 0.95);
+                backdrop-filter: blur(12px);
+                padding: 1rem;
+                border-bottom: 1px solid var(--color-border);
+            }   
 
             .mobile-menu-btn {
                 display: flex;
@@ -738,6 +747,21 @@
         mobileMenuBtn?.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            const navCta = document.querySelector('.nav-cta');
+            
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+                if (navCta) navCta.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                if (navCta) navCta.style.display = 'block';
+            }
+        });
+
     </script>
 </body>
 </html>
