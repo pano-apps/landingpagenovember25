@@ -1327,9 +1327,25 @@ function updateAuthUI(isSignedIn, username = null) {
         };
     });
 
-    // Show comment form only if signed in
-    commentForms.forEach(form => {
-        form.style.display = isSignedIn ? 'block' : 'none';
+    // Show comment form always, but make textarea trigger login if not signed in
+    commentForms.forEach((form, index) => {
+        const rightNum = index + 1;
+        const textarea = form.querySelector('textarea');
+    
+        if (isSignedIn) {
+            form.style.display = 'block';
+            if (textarea) textarea.onclick = null;
+        } else {
+            form.style.display = 'block'; // Show form but make it trigger login
+            if (textarea) {
+                textarea.onclick = function(e) {
+                    e.preventDefault();
+                    showAuthModal();
+                    this.blur();
+                };
+                textarea.style.cursor = 'pointer';
+            }
+        }
     });
 
     userInfos.forEach(info => {
@@ -1535,6 +1551,16 @@ function updateAuthUI(isSignedIn, username = null) {
             }
         };
 
+        // Toggle comment section visibility
+        window.toggleCommentSection = function(rightNumber) {
+            const section = document.getElementById(`comment-section-${rightNumber}`);
+            if (section.style.display === 'none' || !section.style.display) {
+                section.style.display = 'block';
+        } else {
+                section.style.display = 'none';
+            }
+        };
+        
         // Function to load comments for a specific right
         function loadComments(rightNumber) {
             const commentsContainer = document.getElementById(`comments-list-${rightNumber}`);
