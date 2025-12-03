@@ -851,6 +851,35 @@
         .error-message.show {
             display: block;
         }
+
+        .sign-in-to-comment-prompt {
+    padding: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+        
+        }
+
+.sign-in-to-comment-prompt p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+        
+        }
+
+.sign-in-to-comment-prompt a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+
+        }
+
+.sign-in-to-comment-prompt a:hover {
+    color: var(--color-accent);
+
+    }
     </style>
 </head>
 <body>
@@ -1283,40 +1312,58 @@
             }
         });
 
-        // Update UI based on auth state
-        function updateAuthUI(isSignedIn, username = null) {
-            const commentTriggers = document.querySelectorAll('.comment-trigger');
-            const commentForms = document.querySelectorAll('.comment-form');
-            const userInfos = document.querySelectorAll('.user-info');
-            
-            commentTriggers.forEach((trigger, index) => {
-                const rightNum = index + 1;
-                const count = commentCounts[rightNum] || 0;
-                trigger.onclick = () => {
-                    if (isSignedIn) {
-                        toggleCommentSection(rightNum);
-                    } else {
-                        showAuthModal();
-                    }
-                };
-            });
+   // Update UI based on auth state
+function updateAuthUI(isSignedIn, username = null) {
+    const commentTriggers = document.querySelectorAll('.comment-trigger');
+    const commentForms = document.querySelectorAll('.comment-form');
+    const userInfos = document.querySelectorAll('.user-info');
+    
+    // Comment triggers should work for everyone - just toggle visibility
+    commentTriggers.forEach((trigger, index) => {
+        const rightNum = index + 1;
+        const count = commentCounts[rightNum] || 0;
+        trigger.onclick = () => {
+            toggleCommentSection(rightNum);
+        };
+    });
 
-            commentForms.forEach(form => {
-                form.style.display = isSignedIn ? 'block' : 'none';
-            });
+    // Show comment form only if signed in
+    commentForms.forEach(form => {
+        form.style.display = isSignedIn ? 'block' : 'none';
+    });
 
-            userInfos.forEach(info => {
-                if (isSignedIn) {
-                    info.innerHTML = `
-                        <span class="username">${escapeHtml(username)}</span>
-                        <button class="sign-out-btn" onclick="handleSignOut()">Sign out</button>
-                    `;
-                    info.style.display = 'inline-flex';
-                } else {
-                    info.style.display = 'none';
-                }
-            });
+    userInfos.forEach(info => {
+        if (isSignedIn) {
+            info.innerHTML = `
+                <span class="username">${escapeHtml(username)}</span>
+                <button class="sign-out-btn" onclick="handleSignOut()">Sign out</button>
+            `;
+            info.style.display = 'inline-flex';
+        } else {
+            info.style.display = 'none';
         }
+    });
+    
+    // Show sign-in prompt when not logged in
+    document.querySelectorAll('.comment-section-wrapper').forEach((wrapper, index) => {
+        const rightNum = index + 1;
+        const section = document.getElementById(`comment-section-${rightNum}`);
+        if (!isSignedIn && section) {
+            // Add sign-in prompt if it doesn't exist
+            let prompt = section.querySelector('.sign-in-to-comment-prompt');
+            if (!prompt) {
+                prompt = document.createElement('div');
+                prompt.className = 'sign-in-to-comment-prompt';
+                prompt.innerHTML = '<p>Please <a href="#" onclick="showAuthModal(); return false;">sign in</a> to leave a comment</p>';
+                section.insertBefore(prompt, section.querySelector('.comment-form'));
+            }
+            prompt.style.display = 'block';
+        } else if (section) {
+            const prompt = section.querySelector('.sign-in-to-comment-prompt');
+            if (prompt) prompt.style.display = 'none';
+        }
+    });
+}
 
         // Show/hide auth modal
         window.showAuthModal = function() {
